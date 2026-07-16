@@ -57,3 +57,51 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function GET(request: Request) {
+    await dbConnect();
+
+  const session = await getServerSession(authOptions);
+  const user: User = session?.user as User;
+
+  if (!session || !session.user) {
+    return Response.json(
+      {
+        success: false,
+        message: "Not Authenticated",
+      },
+      { status: 401 },
+    );
+  }
+
+  const userId = user._id;
+  try {
+    const founderUser = await UserModel.findById(userId)
+  if (!founderUser) {
+      return Response.json(
+        {
+          success: false,
+          message: "User not found",
+        },
+        { status: 404 },
+      );
+    }
+    return Response.json(
+        {
+          success: true,
+          isAcceptingMessages :founderUser.isAcceptingMessage
+        },
+        { status: 404 },
+      );
+}
+   catch (error) {
+    console.log("Failed to update user status to accept messages");
+    return Response.json(
+      {
+        success: false,
+        message: "Error is getting message accepting staus",
+      },
+      { status: 500 },
+    );
+  }
+}
