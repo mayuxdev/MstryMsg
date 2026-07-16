@@ -42,7 +42,13 @@ export async function GET(request:Request){
         },
     {status :401})
   } catch (error) {
+    console.log('An unexpected error occured:' ,error);
     
+    return Response.json ({
+            success : true,
+            messages : "Not Authenticated"
+        },
+    {status :500})
   }
 
 }
